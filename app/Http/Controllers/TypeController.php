@@ -32,13 +32,27 @@ class TypeController extends Controller
                     ->setFields(['_all'])
                     ->setType('phrase_prefix')
                     ->setQuery($searchText)
-            );
+            )
+//            ->setHighlight(['fields' => [
+//                'razon_social' => new \stdClass(),
+//                'alias' => new \stdClass(),
+//                'domicilio' => new \stdClass()
+//            ]])
+        ;
 
         $search->setQuery($query);
 
         $results = [];
         foreach($search->search()->getResults() as $result) {
-            $results[] = $result->getData();
+            $data = $result->getData();
+            foreach(['razon_social', 'alias', 'localidad'] as $field) {
+//                $data[$field] = str_replace($searchText, sprintf('<em>%s</em>', $searchText), $data[$field]);
+                $data[$field] = preg_replace("/($searchText)/i","<em>$1</em>", $data[$field]);
+            }
+//            foreach($result->getHighlights() as $key => $highlighted) {
+//                $data[$key] = $highlighted[0];
+//            }
+            $results[] = $data;
         }
 
         return $results;
