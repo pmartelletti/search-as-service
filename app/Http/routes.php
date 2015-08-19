@@ -11,9 +11,11 @@
 |
 */
 
-$app->get('/', function () use ($app) {
-    return $app->welcome();
-});
+//$app->get('/', function () use ($app) {
+//    return $app->welcome();
+//});
+
+$app->get('/', ['uses' => 'DashboardController@index', 'as' => 'dashboard']);
 
 // full text search on this type
 $app->get('/{app}/{type}', ['uses' => 'TypeController@fullTextSearch']);
